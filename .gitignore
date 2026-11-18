@@ -10,3 +10,7 @@ Thumbs.db
 # Testausgaben
 _testout.txt
 test_demo_form_*.png
+_r.txt
+_b.txt
+_live.txt
+_testout*.txt
