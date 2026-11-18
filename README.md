@@ -4,6 +4,19 @@
 
 Diese Website wurde auf Grundlage der vom Auftraggeber bereitgestellten ISPM-15-Markt-, Zielgruppen- und Entwicklungsunterlagen erstellt. Sie stellt **ein in Entwicklung befindliches Pilotprodukt** für Holzverpackungs- und Palettenbetriebe vor; sie behauptet bewusst weder fertige Kundenprojekte noch gemessene Einsparungen oder bestehende Zertifizierungen.
 
+## Projekt-Links
+
+| Zweck | Link |
+|---|---|
+| GitHub-Repository | <https://github.com/JohannKern/ISPM15_Landingpage> |
+| Pages-Einstellungen (Aktivierung) | <https://github.com/JohannKern/ISPM15_Landingpage/settings/pages> |
+| Live-Seite Deutsch (nach Aktivierung) | <https://johannkern.github.io/ISPM15_Landingpage/> |
+| Live-Seite English (nach Aktivierung) | <https://johannkern.github.io/ISPM15_Landingpage/en/> |
+| Impressum / Datenschutz (DE) | <https://johannkern.github.io/ISPM15_Landingpage/impressum.html> · <https://johannkern.github.io/ISPM15_Landingpage/datenschutz.html> |
+| Legal notice / Privacy (EN) | <https://johannkern.github.io/ISPM15_Landingpage/en/legal.html> · <https://johannkern.github.io/ISPM15_Landingpage/en/privacy.html> |
+
+> **Status:** Das Repository ist angelegt, **GitHub Pages ist noch nicht aktiviert.** Die Live-Links funktionieren erst nach Abschnitt 4 und sollten erst aktiviert werden, wenn `site.config.json` vollständig ausgefüllt ist (siehe Abschnitt 1). Die URL `https://johannkern.github.io/ISPM15_Landingpage/` ist die `site_url` für den separaten E-Mail-Flyer.
+
 ## 1. Vor der Liveschaltung (wichtig)
 
 Die Dateien sind technisch fertig für GitHub Pages. **Vor einem öffentlichen, rechtssicheren Betrieb sind echte Betreiberangaben und ein externer Formularservice nötig.** Niemand hat Name, berufliche Qualifikationen, Kontaktadresse oder Formspree-Konto des Auftraggebers mitgeliefert. Diese Informationen sind daher nicht erfunden worden.
@@ -53,10 +66,10 @@ Im Browser öffnen: <http://localhost:8000/> (Deutsch) und <http://localhost:800
 
 ## 4. Auf GitHub Pages veröffentlichen
 
-1. Neues GitHub-Repository anlegen, z. B. `ispm15-website`.
-2. **Die Inhalte dieses Projektordners** in das Stammverzeichnis (`/`) des Repositorys hochladen – `index.html` muss direkt im Repository-Stamm liegen.
-3. In GitHub öffnen: **Settings → Pages → Build and deployment → Source → Deploy from a branch → `main` → `/(root)` → Save**.
-4. Warten, bis GitHub Pages die Veröffentlichung abgeschlossen hat; anschließend die angezeigte `github.io`-Adresse öffnen.
+1. ✅ Repository angelegt: <https://github.com/JohannKern/ISPM15_Landingpage> (öffentlich, Branch `main`).
+2. ✅ Inhalte dieses Projektordners liegen im Repository-Stamm (`/`). `ChatGPT.md` ist über `.gitignore` ausgeschlossen. Änderungen später per `git add -A`, `git commit` und `git push` hochladen.
+3. ⏳ Pages aktivieren (erst nach Ausfüllen von `site.config.json` und erneutem Build): <https://github.com/JohannKern/ISPM15_Landingpage/settings/pages> → **Build and deployment → Source → Deploy from a branch → `main` → `/(root)` → Save**.
+4. Warten, bis GitHub Pages die Veröffentlichung abgeschlossen hat (Fortschritt unter <https://github.com/JohannKern/ISPM15_Landingpage/actions>); anschließend <https://johannkern.github.io/ISPM15_Landingpage/> öffnen.
 5. Links der deutschen und englischen Website, das mobile Menü, Impressum, Datenschutz und echte Demoübermittlung erneut prüfen. Falls gewünscht, eine eigene Domain in GitHub Pages einrichten und HTTPS aktivieren.
 
 **Wichtig:** GitHub Pages stellt nur statische Dateien bereit und kann selbst keine Formular-E-Mails versenden oder Django/PostgreSQL hosten. Die spätere SaaS-Anwendung aus deinen Unterlagen ist ein **separates Backend-Projekt**; die hier gelieferte Marketingwebsite benötigt dieses Backend nicht.
