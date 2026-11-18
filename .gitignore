@@ -1,0 +1,8 @@
+# Interne Notizen / Chatverlauf – nicht veröffentlichen
+ChatGPT.md
+
+# Python / Betriebssystem
+__pycache__/
+*.pyc
+Thumbs.db
+.DS_Store
