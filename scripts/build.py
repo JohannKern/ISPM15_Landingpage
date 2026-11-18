@@ -342,7 +342,7 @@ def legal_page():
     t=LEGAL[LANG]
     required = ['owner_name','street_address','postal_code','city','contact_email','phone']
     complete = all(str(CFG.get(k,'')).strip() for k in required)
-    alert = '' if complete else f'<div class="legal-alert">{icon("clock",22)}<p>{t["warning"]}</p></div>'
+    alert = f'<div class="legal-alert">{icon("clock",22)}<p>{t["warning"]}</p></div>' if (bool(CFG.get('show_legal_draft_notice', False)) and not complete) else ''
     legal_form = f'<br>{esc(CFG["legal_form"])}' if CFG.get('legal_form') else ''
     owner_section = f'<section><h2>{t["operator"]}</h2><p>{legal_owner()}{legal_form}<br>{field("street_address","[Straße und Hausnummer]","[Street and number]")}<br>{field("postal_code","[Postleitzahl]","[Postal code]")} {field("city","[Ort]","[City]")}<br>{esc(CFG.get("country") or "Deutschland")}</p></section>'
     contact_section = f'<section><h2>{t["contact"]}</h2><p>{t["email"]}: {field("contact_email","[Geschäftliche E-Mail-Adresse]","[Business email]")}<br>{t["phone"]}: {field("phone","[Telefonnummer]","[Phone number]")}</p></section>'
@@ -385,7 +385,9 @@ def privacy_page():
         sections.append(f'<section><h2>{title}</h2><p>{desc}</p>{append}</section>')
     core_fields = ['owner_name','street_address','postal_code','city','contact_email','privacy_retention_de','privacy_retention_en']
     privacy_complete = all(str(CFG.get(k,'')).strip() for k in core_fields) and bool(CFG.get('formspree_endpoint'))
-    alert = '' if privacy_complete else f'<div class="legal-alert">{icon("clock",22)}<p>{t["alert"]}</p></div>'
+    # Entwurfshinweis standardmäßig ausgeblendet; einblenden mit "show_legal_draft_notice": true in site.config.json
+    show_notice = bool(CFG.get('show_legal_draft_notice', False))
+    alert = f'<div class="legal-alert">{icon("clock",22)}<p>{t["alert"]}</p></div>' if (show_notice and not privacy_complete) else ''
     return f'''<section class="legal-hero"><div class="shell legal-hero-content"><p class="eyebrow eyebrow-light"><span class="eyebrow-line"></span>{t['kicker']}</p><h1>{t['title']}</h1><p>{t['intro']}</p></div></section><div class="shell legal-body">{alert}{''.join(sections)}</div>'''
 
 for LANG in ('de', 'en'):
