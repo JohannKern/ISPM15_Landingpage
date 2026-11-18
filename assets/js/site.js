@@ -109,9 +109,12 @@
       setStatus(form.dataset.msgUnconfigured, 'error');
       return;
     }
-    if (form.querySelector('[name="_gotcha"]').value.trim()) return;
     // Daten vor dem Sperren der Felder einlesen (gesperrte Felder werden nicht übertragen).
     const payload = new FormData(form);
+    // Das unsichtbare Spam-Schutzfeld (_gotcha) wird von Browser-Autofill/Passwortmanagern manchmal befüllt.
+    // Früher brach das Absenden dann STILL ab (keine Meldung, keine Mail). Jetzt wird das Feld nicht
+    // mitgesendet, damit echte Anfragen immer ankommen; Formspree filtert Spam zusätzlich serverseitig.
+    payload.delete('_gotcha');
     submitting = true;
     setStatus(form.dataset.msgSending, 'sending');
     setBusy(true);

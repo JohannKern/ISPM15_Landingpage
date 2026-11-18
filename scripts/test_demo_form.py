@@ -91,6 +91,17 @@ with sync_playwright() as p:
     page.screenshot(path='test_demo_form_success.png')
     ctx.close()
 
+    # --- 2b: Spam-Schutzfeld durch Browser-Autofill befüllt -> darf NIE still abbrechen -------------
+    hp_posts = []
+    ctx, page, errors = new_page(browser, make_handler(hp_posts, 200))
+    fill(page)
+    page.evaluate("document.getElementById('website-check').value = 'autofill'")
+    page.click('[data-submit-button]')
+    page.wait_for_timeout(1500)
+    check('Autofill im Schutzfeld: Anfrage wird trotzdem gesendet', len(hp_posts) == 1, f'{len(hp_posts)} Anfrage(n)')
+    check('Autofill im Schutzfeld: Bestätigung sichtbar', page.is_visible('[data-form-success]'))
+    ctx.close()
+
     # --- 3: Fehlerfall -------------------------------------------------------------------------------
     err_posts = []
     ctx, page, errors = new_page(browser, make_handler(err_posts, 500))
