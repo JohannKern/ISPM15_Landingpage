@@ -272,6 +272,39 @@ body {
 .btn-submit:hover { background: linear-gradient(105deg,#f0d2ff,#c699ff); }
 .form-status[data-state="success"] { background: #17382e; color: #a4f6d0; }
 .form-status[data-state="error"] { background: #492535; color: #ffccd3; }
+.form-status[data-state="sending"] { background: #2a1d3d; color: #e7d3ff; }
+
+/* Mehrfachversand verhindern: gesperrter Button + Felder während des Versands */
+.form-card [hidden] { display: none !important; }
+.btn-submit:disabled, .btn-submit.is-loading {
+  opacity: .78; cursor: progress; transform: none; pointer-events: none;
+  background: linear-gradient(105deg,#cfa6f0,#a374e6);
+}
+.btn-submit.is-loading::before {
+  content: ""; width: 15px; height: 15px; margin-right: 10px; border-radius: 50%;
+  border: 2px solid rgba(30,16,43,.3); border-top-color: #1e102b; display: inline-block;
+  animation: form-spin .8s linear infinite;
+}
+.demo-form.is-submitting { opacity: .88; }
+.demo-form.is-submitting input, .demo-form.is-submitting select, .demo-form.is-submitting textarea { cursor: progress; }
+@keyframes form-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .btn-submit.is-loading::before { animation-duration: 2.4s; } }
+
+/* Eindeutige Bestätigung nach erfolgreichem Versand */
+.form-success {
+  text-align: center; padding: 34px 18px 30px; border-radius: 14px;
+  background: linear-gradient(160deg,#16382f,#142c2b); border: 1px solid rgba(138,240,196,.38);
+  color: #e6fff3; box-shadow: 0 0 0 4px rgba(138,240,196,.07);
+}
+.form-success:focus { outline: none; }
+.form-success-icon {
+  width: 66px; height: 66px; border-radius: 50%; margin: 0 auto 18px; display: grid; place-items: center;
+  background: #20c997; color: #07251c; box-shadow: 0 8px 26px rgba(32,201,151,.35);
+}
+.form-success-icon svg { stroke-width: 2.6; }
+.form-success h3 { margin: 0 0 12px; font-size: 26px; line-height: 1.2; color: #ffffff; }
+.form-success p { margin: 0 auto 10px; max-width: 34em; font-size: 15px; line-height: 1.6; color: #c8f5e0; }
+.form-success .form-success-hint { margin-top: 14px; font-size: 13px; font-weight: 650; color: #a4f6d0; }
 .form-privacy { color: #afa0be; }
 .form-privacy a { color: #e7beff; }
 

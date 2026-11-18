@@ -6,3 +6,7 @@ __pycache__/
 *.pyc
 Thumbs.db
 .DS_Store
+
+# Testausgaben
+_testout.txt
+test_demo_form_*.png

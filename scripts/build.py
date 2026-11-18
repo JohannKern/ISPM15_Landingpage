@@ -204,6 +204,8 @@ DE = {
   'required':'Pflichtfeld', 'submit':'Demo anfordern', 'sending':'Wird gesendet ...',
   'form_privacy':'Mit dem Absenden verarbeiten wir Ihre Angaben zur Bearbeitung Ihrer Anfrage. Weitere Informationen in unserer <a href="datenschutz.html">Datenschutzerklärung</a>.',
   'form_success':'Vielen Dank! Ihre Anfrage wurde übermittelt. Wir melden uns so bald wie möglich.',
+  'success_title':'Anfrage erfolgreich gesendet',
+  'success_hint':'Sie müssen nichts weiter tun. Bitte senden Sie die Anfrage nicht noch einmal ab.',
   'form_error':'Die Anfrage konnte nicht gesendet werden. Bitte versuchen Sie es später erneut.',
   'form_unconfigured':'Das Demoformular ist noch nicht freigeschaltet. Vor der Veröffentlichung muss der Formularservice eingerichtet werden.',
   'form_honeypot':'Dieses Feld leer lassen',
@@ -264,6 +266,8 @@ EN = {
   'required':'Required', 'submit':'Request a demo', 'sending':'Sending ...',
   'form_privacy':'By submitting this form, you provide information used to respond to your enquiry. Read our <a href="privacy.html">privacy policy</a>.',
   'form_success':'Thank you! Your request has been sent. We will get back to you as soon as possible.',
+  'success_title':'Request sent successfully',
+  'success_hint':'There is nothing else you need to do. Please do not submit the request again.',
   'form_error':'Your request could not be sent. Please try again later.',
   'form_unconfigured':'The demo form is not yet activated. A form service needs to be configured before launch.',
   'form_honeypot':'Leave this field blank',
@@ -291,7 +295,13 @@ def demo_form(t):
       <button class="btn btn-submit" type="submit" data-submit-button>{t['submit']}{icon('arrow',19)}</button>
       <p role="status" aria-live="polite" class="form-status" data-form-status></p>
       <p class="form-privacy">{icon('lock',14)}<span>{t['form_privacy']}</span></p>
-    </form></div></div>'''
+    </form>
+    <div class="form-success" data-form-success role="status" aria-live="polite" tabindex="-1" hidden>
+      <span class="form-success-icon" aria-hidden="true">{icon('check',34)}</span>
+      <h3>{t['success_title']}</h3>
+      <p>{t['form_success']}</p>
+      <p class="form-success-hint">{t['success_hint']}</p>
+    </div></div></div>'''
 
 def landing():
     t=DE if LANG=='de' else EN
