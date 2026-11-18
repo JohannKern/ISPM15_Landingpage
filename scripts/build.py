@@ -8,6 +8,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 CFG = json.loads((ROOT / 'site.config.json').read_text(encoding='utf-8'))
+# Demo-Formular samt aller "Demo anfordern"-Buttons: standardmäßig AUS. Einschalten mit "show_demo_form": true.
+SHOW_DEMO = bool(CFG.get('show_demo_form', False))
 
 def esc(value):
     return html.escape(str(value or ''), quote=True)
@@ -40,7 +42,7 @@ def icon(name, size=22, cls=''):
 COPY = {
 'de': {
  'meta_title': 'ISPM15 Desk – ISPM-15-Nachweise einfach verwalten',
- 'meta_desc': 'Die geplante digitale Nachweisverwaltung für Holzverpackungs- und Palettenbetriebe. Lieferungen, Behandlungsbelege und Kontrollakten an einem Ort. Jetzt Pilot-Demo anfragen.',
+ 'meta_desc': 'Die geplante digitale Nachweisverwaltung für Holzverpackungs- und Palettenbetriebe. Lieferungen, Behandlungsbelege und Kontrollakten an einem Ort.',
  'about_meta': 'Über das Projekt und die Person hinter ISPM15 Desk: eine schlanke ISPM-15-Nachweisverwaltung mit Fokus auf echte betriebliche Abläufe.',
  'nav_how': 'So funktioniert’s', 'nav_features': 'Funktionen', 'nav_about': 'Über mich', 'nav_demo': 'Demo anfordern',
  'nav_aria': 'Hauptnavigation', 'menu': 'Menü öffnen', 'lang_aria': 'Sprache wählen',
@@ -51,7 +53,7 @@ COPY = {
 },
 'en': {
  'meta_title': 'ISPM15 Desk – Simplify ISPM 15 documentation',
- 'meta_desc': 'A focused documentation workspace for wood packaging and pallet manufacturers. Manage shipments, treatment records and audit-ready exports. Request a pilot demo.',
+ 'meta_desc': 'A focused documentation workspace for wood packaging and pallet manufacturers. Manage shipments, treatment records and audit-ready exports.',
  'about_meta': 'Meet the idea and person behind ISPM15 Desk: focused software for real-life ISPM 15 documentation workflows.',
  'nav_how': 'How it works', 'nav_features': 'Features', 'nav_about': 'About me', 'nav_demo': 'Request a demo',
  'nav_aria': 'Main navigation', 'menu': 'Open menu', 'lang_aria': 'Select language',
@@ -106,6 +108,7 @@ def header(page):
     features = '#features' if LANG == 'en' else '#funktionen'
     how = '#workflow' if LANG == 'en' else '#ablauf'
     demo = '#demo'
+    nav_demo_btn = f"<a class=\"btn btn-nav\" href=\"{p['home']}{demo}\">{c['nav_demo']}{icon('arrow',17)}</a>" if SHOW_DEMO else ''
     return f'''<header class="site-header"><div class="shell header-inner">
   {brand}
   <button class="menu-toggle" aria-controls="primary-nav" aria-expanded="false" aria-label="{c['menu']}">{icon('menu',24)}</button>
@@ -115,15 +118,16 @@ def header(page):
     <a class="nav-link {'active' if page=='about' else ''}" {'aria-current="page"' if page=='about' else ''} href="{p['about']}">{c['nav_about']}</a>
     <div class="header-extras"><div class="lang-switch" aria-label="{c['lang_aria']}">
       <a href="{p['other'][page]}" lang="{'en' if LANG=='de' else 'de'}" hreflang="{'en' if LANG=='de' else 'de'}" class="lang-option">{'EN' if LANG=='de' else 'DE'}</a><span class="lang-separator" aria-hidden="true">/</span><span class="lang-current" aria-current="true">{'DE' if LANG=='de' else 'EN'}</span>
-    </div><a class="btn btn-nav" href="{p['home']}{demo}">{c['nav_demo']}{icon('arrow',17)}</a></div>
+    </div>{nav_demo_btn}</div>
   </nav>
 </div></header>'''
 
 def footer(page):
     c=COPY[LANG]; p=paths(page)
+    footer_demo_link = f"<a href=\"{p['home']}#demo\">{c['nav_demo']}</a>" if SHOW_DEMO else ''
     return f'''<footer class="site-footer"><div class="shell">
   <div class="footer-top"><div class="footer-intro"><a class="brand brand-footer" href="{p['home']}"><span class="brand-symbol" aria-hidden="true"><span></span><span></span><span></span></span><span class="brand-words">ISPM<span class="brand-number">15</span><span class="brand-desk">Desk</span></span></a><h2>{c['footer_tagline']}</h2><p>{c['footer_desc']}</p></div>
-  <div class="footer-columns"><div><h3>{c['footer_product']}</h3><a href="{p['home']}">{c['footer_home']}</a><a href="{p['home']}#{'funktionen' if LANG=='de' else 'features'}">{c['nav_features']}</a><a href="{p['home']}#demo">{c['nav_demo']}</a></div><div><h3>{c['footer_company']}</h3><a href="{p['about']}">{c['nav_about']}</a><a href="{p['legal']}">{c['footer_imprint']}</a><a href="{p['privacy']}">{c['footer_privacy']}</a></div></div></div>
+  <div class="footer-columns"><div><h3>{c['footer_product']}</h3><a href="{p['home']}">{c['footer_home']}</a><a href="{p['home']}#{'funktionen' if LANG=='de' else 'features'}">{c['nav_features']}</a>{footer_demo_link}</div><div><h3>{c['footer_company']}</h3><a href="{p['about']}">{c['nav_about']}</a><a href="{p['legal']}">{c['footer_imprint']}</a><a href="{p['privacy']}">{c['footer_privacy']}</a></div></div></div>
   <div class="footer-bottom"><span>© 2026 ISPM15 Desk. {c['footer_disclaimer']}</span><span>{'Mit Fokus auf reale Arbeitsabläufe.' if LANG=='de' else 'Built around real-world workflows.'}</span></div>
 </div></footer>'''
 
@@ -311,9 +315,12 @@ def landing():
     steps=''.join(f'<article class="step"><span class="step-number">{num}</span><div><h3>{title}</h3><p>{desc}</p></div></article>' for num,title,desc in t['steps'])
     features=''.join(f'<article class="feature-card"><span class="feature-icon">{icon(ic,25)}</span><h3>{title}</h3><p>{desc}</p></article>' for ic,title,desc in t['features'])
     bullets=''.join(f'<li>{icon("check",19)}<span>{i}</span></li>' for i in t['fit_bullets'])
+    hero_demo_btn = f"<a class=\"btn btn-primary btn-large\" href=\"#demo\">{t['hero_primary']}{icon('arrow',20)}</a>" if SHOW_DEMO else ''
+    demo_section = f"<section class=\"demo-section\"><div class=\"shell\">{demo_form(t)}</div></section>\n    " if SHOW_DEMO else ''
+    closing_btn = f"<a class=\"btn btn-secondary btn-large\" href=\"#demo\">{t['final_cta']}{icon('arrow',20)}</a>" if SHOW_DEMO else ''
     return f'''<section class="hero"><div class="hero-mesh" aria-hidden="true"></div><div class="shell hero-grid">
       <div class="hero-copy"><div class="hero-topline"><span class="tiny-ring" aria-hidden="true"></span>{t['hero_eyebrow']}</div><h1>{t['hero_title']}</h1><p class="hero-lead">{t['hero_desc']}</p>
-        <div class="hero-actions"><a class="btn btn-primary btn-large" href="#demo">{t['hero_primary']}{icon('arrow',20)}</a><a class="btn btn-text-light" href="#{wf_id}">{t['hero_secondary']}{icon('arrow',18)}</a></div>
+        <div class="hero-actions">{hero_demo_btn}<a class="btn {'btn-text-light' if SHOW_DEMO else 'btn-primary btn-large'}" href="#{wf_id}">{t['hero_secondary']}{icon('arrow',18)}</a></div>
         <p class="hero-status"><span aria-hidden="true"></span>{t['hero_note']}</p>
       </div><div class="hero-art">{dashboard()}</div></div>
       <div class="shell hero-bottom"><span>{t['trust_intro']}</span><div class="trust-labels"><span>{icon('check',16)}{t['trust1']}</span><span>{icon('check',16)}{t['trust2']}</span><span>{icon('check',16)}{t['trust3']}</span></div></div>
@@ -323,8 +330,7 @@ def landing():
     <section class="section feature-section" id="{features_id}"><div class="shell"><div class="section-header centered"><p class="eyebrow"><span class="eyebrow-line"></span>{t['features_eyebrow']}</p><h2>{t['features_title']}</h2><p>{t['features_desc']}</p></div><div class="features-grid">{features}</div><p class="feature-notice">{icon('clock',16)}{t['feature_notice']}</p></div></section>
     <section class="section fit-section"><div class="shell fit-grid"><div class="fit-main"><p class="eyebrow"><span class="eyebrow-line"></span>{t['fit_eyebrow']}</p><h2>{t['fit_title']}</h2><p>{t['fit_desc']}</p><ul class="fit-bullets">{bullets}</ul></div><div class="fit-panel"><div class="fit-panel-pattern" aria-hidden="true"></div><span class="fit-mini">{t['fit_card_kicker']}</span><span class="fit-sign">✳</span><h3>{t['fit_card_title']}</h3><p>{t['fit_card_desc']}</p><div class="fit-divider"></div><div class="fit-benefits"><div>{icon('layers',20)}<span><strong>{t['fit_card1']}</strong><small>{t['fit_card1_desc']}</small></span></div><div>{icon('spark',20)}<span><strong>{t['fit_card2']}</strong><small>{t['fit_card2_desc']}</small></span></div></div></div></div></section>
     <section class="section roadmap-section"><div class="shell roadmap-layout"><div><p class="eyebrow"><span class="eyebrow-line"></span>{t['next_eyebrow']}</p><h2>{t['next_title']}</h2><p>{t['next_desc']}</p></div><div class="roadmap-list"><div><span class="roadmap-dot active"></span><b>{t['next1']}</b><p>{t['next1_desc']}</p></div><div><span class="roadmap-dot"></span><b>{t['next2']}</b><p>{t['next2_desc']}</p></div><div><span class="roadmap-dot"></span><b>{t['next3']}</b><p>{t['next3_desc']}</p></div></div></div></section>
-    <section class="demo-section"><div class="shell">{demo_form(t)}</div></section>
-    <section class="closing-section"><div class="shell closing-inner"><div><h2>{t['final_title']}</h2><p>{t['final_desc']}</p></div><a class="btn btn-secondary btn-large" href="#demo">{t['final_cta']}{icon('arrow',20)}</a></div></section>'''
+    {demo_section}<section class="closing-section"><div class="shell closing-inner"><div><h2>{t['final_title']}</h2><p>{t['final_desc']}</p></div>{closing_btn}</div></section>'''
 
 ABOUT = {
 'de':dict(kicker='DIE PERSON HINTER DEM PRODUKT',title='Nicht mehr Software.<br><em>Weniger Reibung.</em>',intro='ISPM15 Desk entsteht aus der Idee, dass digitale Werkzeuge vor allem eines tun sollten: einen konkreten Arbeitsablauf spürbar vereinfachen.',label='ÜBER MICH',bio_title='Hallo, ich bin',bio_placeholder='[Ihr Name]',bio_intro='Ich arbeite an einer fokussierten Lösung für die Verwaltung von ISPM-15-Nachweisen – mit dem Ziel, weniger Suchaufwand und mehr Übersicht in den Alltag von Holzverpackungsbetrieben zu bringen.',bio_role='Meine Rolle',bio_background='Mein beruflicher Hintergrund',bio_expertise='Meine fachliche Expertise',approach_label='WIE ICH ARBEITE',approach_title='Lieber ein Problem richtig lösen als zehn nur halb.',approach_desc='Die Projektkonzeption folgt drei einfachen Prinzipien:',principles=[('01','Erst zuhören','Vor neuen Funktionen steht die Frage, wie Betriebe heute tatsächlich arbeiten.'),('02','Einfach beginnen','Die erste Version konzentriert sich auf Lieferanten, Lieferungen, Dokumente und eine exportierbare Nachweisakte.'),('03','Sinnvoll ausbauen','Erinnerungen, PDF-Assistenz und weitere Funktionen folgen nur bei nachgewiesenem Bedarf.')],cta_title='Lassen Sie uns über Ihren Prozess sprechen.',cta_desc='Sie führen einen Holzverpackungs- oder Palettenbetrieb? Ich freue mich über einen Austausch zu Ihrem Dokumentationsalltag.',cta='Pilot-Demo anfragen',required_note='Persönliche Angaben sind in den Quellen nicht enthalten und müssen vor Veröffentlichung ergänzt werden.'),
@@ -339,10 +345,11 @@ def about_page():
     principles=''.join(f'<article><span>{num}</span><div><h3>{title}</h3><p>{desc}</p></div></article>' for num,title,desc in t['principles'])
     about_complete = all(str(CFG.get(k, '')).strip() for k in ['owner_name','about_role_de','about_role_en','about_background_de','about_background_en','about_expertise_de','about_expertise_en'])
     bio_note = '' if about_complete else f'<p class="bio-note">{icon("file",15)}{t["required_note"]}</p>'
+    about_cta = f"""<section class="about-cta"><div class="shell about-cta-inner"><div><h2>{t['cta_title']}</h2><p>{t['cta_desc']}</p></div><a class="btn btn-primary btn-large" href="{p['home']}#demo">{t['cta']}{icon('arrow',18)}</a></div></section>""" if SHOW_DEMO else ''
     return f'''<section class="inner-hero"><div class="shell inner-hero-grid"><div><p class="eyebrow eyebrow-light"><span class="eyebrow-line"></span>{t['kicker']}</p><h1>{t['title']}</h1><p>{t['intro']}</p></div><div class="inner-hero-visual" aria-hidden="true"><div class="rings-logo"><div class="rings-small">15</div></div></div></div></section>
     <section class="section biography-section"><div class="shell biography-grid"><div class="bio-portrait" aria-hidden="true"><div class="portrait-mark">I<span>S</span></div><div class="portrait-grid"></div></div><div class="bio-content"><p class="eyebrow"><span class="eyebrow-line"></span>{t['label']}</p><h2>{t['bio_title']}<br>{placeholder_name}<span class="period">.</span></h2><p class="bio-intro">{t['bio_intro']}</p><dl class="bio-facts"><div><dt>{t['bio_role']}</dt><dd>{roles}</dd></div><div><dt>{t['bio_background']}</dt><dd>{bg}</dd></div><div><dt>{t['bio_expertise']}</dt><dd>{expert}</dd></div></dl>{bio_note}</div></div></section>
     <section class="section approach-section"><div class="shell"><div class="section-header centered"><p class="eyebrow"><span class="eyebrow-line"></span>{t['approach_label']}</p><h2>{t['approach_title']}</h2><p>{t['approach_desc']}</p></div><div class="approach-grid">{principles}</div></div></section>
-    <section class="about-cta"><div class="shell about-cta-inner"><div><h2>{t['cta_title']}</h2><p>{t['cta_desc']}</p></div><a class="btn btn-primary btn-large" href="{p['home']}#demo">{t['cta']}{icon('arrow',18)}</a></div></section>'''
+    {about_cta}'''
 
 LEGAL = {
 'de':dict(kicker='RECHTLICHES',title='Impressum',intro='Angaben gemäß § 5 Digitale-Dienste-Gesetz (DDG).',warning='Wichtig: Rechtliche Pflichtangaben fehlen noch. Bitte diese Seite vor Veröffentlichung vollständig mit Ihren eigenen Daten ergänzen und prüfen lassen.',operator='Anbieter',contact='Kontakt',email='E-Mail',phone='Telefon',represented='Vertretungsberechtigt',register='Registerangaben, soweit zutreffend',register_court='Registergericht',register_number='Registernummer',vat='Umsatzsteuer-Identifikationsnummer, soweit vorhanden',editorial='Hinweis',editorial_text='ISPM15 Desk ist ein unabhängiges Softwareprojekt und keine behördliche oder amtliche Zertifizierungsstelle.'),
@@ -390,15 +397,26 @@ def privacy_page():
     github = '<p><a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener noreferrer">GitHub Privacy Statement ↗</a></p>'
     formspree = '<p><a href="https://formspree.io/legal/privacy-policy" target="_blank" rel="noopener noreferrer">Formspree Privacy Policy ↗</a></p>'
     sections=[]
-    for i,(title,desc) in enumerate(t['sections']):
-        append=(ctrl if i==0 else github if i==1 else formspree if i==2 else f'<p>{field("privacy_retention_"+LANG,"[Konkrete Löschfrist ergänzen]","[Add your retention period]")}</p>' if i==3 else '')
+    raw_sections=list(t['sections'])
+    if not SHOW_DEMO:
+        # Ohne Demo-Formular: kein Formspree, Kontakt nur per E-Mail/Telefon (Daten aus dem Impressum)
+        if LANG=='de':
+            raw_sections[2]=('3. Kontaktaufnahme','Wenn Sie uns per E-Mail oder Telefon kontaktieren, verarbeiten wir Ihre Angaben (z. B. Name, Kontaktdaten und den Inhalt Ihrer Nachricht), um Ihre Anfrage zu bearbeiten und Rückfragen zu stellen. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (vorvertragliche Maßnahmen) bzw. Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Beantwortung von Anfragen). Diese Website enthält kein Kontaktformular.')
+            intro_text='Transparente Informationen zur Verarbeitung personenbezogener Daten beim Besuch dieser Website und bei der Kontaktaufnahme.'
+        else:
+            raw_sections[2]=('3. Contacting us','If you contact us by email or phone, we process the information you provide (such as your name, contact details and the content of your message) to handle your enquiry and ask follow-up questions. The legal basis is Article 6(1)(b) GDPR (pre-contractual steps) or Article 6(1)(f) GDPR (legitimate interest in answering enquiries). This website does not contain a contact form.')
+            intro_text='How personal data is handled when you visit this website or contact us.'
+    else:
+        intro_text=t['intro']
+    for i,(title,desc) in enumerate(raw_sections):
+        append=(ctrl if i==0 else github if i==1 else (formspree if SHOW_DEMO else '') if i==2 else f'<p>{field("privacy_retention_"+LANG,"[Konkrete Löschfrist ergänzen]","[Add your retention period]")}</p>' if i==3 else '')
         sections.append(f'<section><h2>{title}</h2><p>{desc}</p>{append}</section>')
     core_fields = ['owner_name','street_address','postal_code','city','contact_email','privacy_retention_de','privacy_retention_en']
     privacy_complete = all(str(CFG.get(k,'')).strip() for k in core_fields) and bool(CFG.get('formspree_endpoint'))
     # Entwurfshinweis standardmäßig ausgeblendet; einblenden mit "show_legal_draft_notice": true in site.config.json
     show_notice = bool(CFG.get('show_legal_draft_notice', False))
     alert = f'<div class="legal-alert">{icon("clock",22)}<p>{t["alert"]}</p></div>' if (show_notice and not privacy_complete) else ''
-    return f'''<section class="legal-hero"><div class="shell legal-hero-content"><p class="eyebrow eyebrow-light"><span class="eyebrow-line"></span>{t['kicker']}</p><h1>{t['title']}</h1><p>{t['intro']}</p></div></section><div class="shell legal-body">{alert}{''.join(sections)}</div>'''
+    return f'''<section class="legal-hero"><div class="shell legal-hero-content"><p class="eyebrow eyebrow-light"><span class="eyebrow-line"></span>{t['kicker']}</p><h1>{t['title']}</h1><p>{intro_text}</p></div></section><div class="shell legal-body">{alert}{''.join(sections)}</div>'''
 
 for LANG in ('de', 'en'):
     folder = ROOT if LANG == 'de' else ROOT / 'en'
