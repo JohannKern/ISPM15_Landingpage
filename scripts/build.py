@@ -42,7 +42,7 @@ def icon(name, size=22, cls=''):
 COPY = {
 'de': {
  'meta_title': 'ISPM15 Desk – ISPM-15-Nachweise einfach verwalten',
- 'meta_desc': 'Die geplante digitale Nachweisverwaltung für Holzverpackungs- und Palettenbetriebe. Lieferungen, Behandlungsbelege und Kontrollakten an einem Ort.',
+ 'meta_desc': 'Die geplante digitale Nachweisverwaltung für Holzverpackungs- und Palettenbetriebe. Lieferungen, Behandlungsbelege und Kontrollakten an einem Ort. Jetzt Pilot-Demo anfragen.',
  'about_meta': 'Über das Projekt und die Person hinter ISPM15 Desk: eine schlanke ISPM-15-Nachweisverwaltung mit Fokus auf echte betriebliche Abläufe.',
  'nav_how': 'So funktioniert’s', 'nav_features': 'Funktionen', 'nav_about': 'Über mich', 'nav_demo': 'Demo anfordern',
  'nav_aria': 'Hauptnavigation', 'menu': 'Menü öffnen', 'lang_aria': 'Sprache wählen',
@@ -53,7 +53,7 @@ COPY = {
 },
 'en': {
  'meta_title': 'ISPM15 Desk – Simplify ISPM 15 documentation',
- 'meta_desc': 'A focused documentation workspace for wood packaging and pallet manufacturers. Manage shipments, treatment records and audit-ready exports.',
+ 'meta_desc': 'A focused documentation workspace for wood packaging and pallet manufacturers. Manage shipments, treatment records and audit-ready exports. Request a pilot demo.',
  'about_meta': 'Meet the idea and person behind ISPM15 Desk: focused software for real-life ISPM 15 documentation workflows.',
  'nav_how': 'How it works', 'nav_features': 'Features', 'nav_about': 'About me', 'nav_demo': 'Request a demo',
  'nav_aria': 'Main navigation', 'menu': 'Open menu', 'lang_aria': 'Select language',

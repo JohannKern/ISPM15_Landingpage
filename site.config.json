@@ -15,7 +15,7 @@
   "register_number": "",
   "vat_id": "",
   "show_legal_draft_notice": false,
-  "show_demo_form": false,
+  "show_demo_form": true,
   "about_role_de": "",
   "about_role_en": "",
   "about_background_de": "",

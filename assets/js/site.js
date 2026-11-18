@@ -22,6 +22,38 @@
     });
   }
 
+  // Saubere Adresse: Anker-Links (#demo, #ablauf, ...) scrollen zum Abschnitt,
+  // hinterlassen aber kein "#..." in der Adresszeile.
+  const normPath = path => path.replace(/index\.html$/, '');
+  const cleanUrl = () => history.replaceState(null, '', location.pathname + location.search);
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const scrollToId = (id, smooth) => {
+    let target = null;
+    try { target = document.getElementById(decodeURIComponent(id)); } catch (error) { return false; }
+    if (!target) return false;
+    target.scrollIntoView({ behavior: smooth && !reduceMotion ? 'smooth' : 'auto', block: 'start' });
+    return true;
+  };
+  document.addEventListener('click', event => {
+    const link = event.target.closest('a[href*="#"]');
+    if (!link || event.defaultPrevented || event.button !== 0 ||
+        event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    if (link.target && link.target !== '_self') return;
+    const url = new URL(link.href, location.href);
+    if (url.origin !== location.origin || normPath(url.pathname) !== normPath(location.pathname)) return;
+    if (url.hash.length < 2) return;
+    if (scrollToId(url.hash.slice(1), true)) {
+      event.preventDefault();
+      cleanUrl();
+    }
+  });
+  // Aufruf mit Anker (z. B. aus der E-Mail: .../index.html#demo): zum Abschnitt scrollen, Adresse bereinigen.
+  if (location.hash.length > 1) {
+    window.addEventListener('load', () => {
+      if (scrollToId(location.hash.slice(1), false)) cleanUrl();
+    });
+  }
+
   const form = document.querySelector('[data-demo-form]');
   if (!form) return;
   const button = form.querySelector('[data-submit-button]');
